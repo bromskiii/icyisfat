@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gapazeria</title>
+    <style>
+        /* Global styles */
+        body {
+            background-color: #000; /* Black background */
+            color: orange; /* Orange text */
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+        
+        /* Box styles */
+        .order-summary, .bill-popup {
+            background-color: orange; /* Orange background for boxes */
+            color: black; /* Black text inside boxes */
+            border: 1px solid #ccc;
+            padding: 15px;
+            position: fixed;
+            z-index: 10;
+            width: 300px; /* Width for the boxes */
+            right: 10px; /* Aligning the box to the right */
+            display: none; /* Initially hidden */
+            top: 100px; /* Position from the top of the viewport */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for better visibility */
+        }
+
+        /* Title page styles */
+        .title-page {
+            background-color: black; /* Black background */
+            color: rgba(255, 165, 0, 0.9); /* Text inside title page */
+            text-align: center;
+            padding: 50px;
+            z-index: 20;
+            display: flex; /* Flex to center contents */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full height for the title page */
+        }
+
+        /* Button styles */
+        button {
+            background-color: red; /* Red buttons */
+            color: black; /* Button text color */
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: darkred; /* Dark red on hover */
+        }
+
+        /* Menu button styling */
+        #buy-here {
+            font-size: 24px; /* Larger menu button */
+            padding: 15px 30px; /* Bigger padding */
+        }
+
+        /* Menu and footer styles */
+        header, main, footer {
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: orange; /* Titles in orange */
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+        }
+
+        nav a {
+            color: orange; /* Link color */
+            text-decoration: none;
+        }
+
+        .food-name {
+            color: yellow; /* Food names in yellow */
+        }
+
+        .food-price {
+            color: yellow; /* Prices in yellow */
+        }
+
+        .food-price strong::before {
+            content: '$';
+            color: white; /* Dollar sign in white */
+            margin-right: 2px;
+        }
+
+        /* Counter styles */
+        .counter {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity {
+            margin: 0 10px;
+            width: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Gapazeria</h1>
+        <nav>
+            <ul>
+                <li><button id="buy-here">Menu</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="title-page" id="title-page">
+        <h1>Gapazeria</h1>
+        <p>All Veg Restaurant</p>
+        <p>About Us<br>Welcome to Gapazeria, where we believe that eating healthy should never mean compromising on flavor! Our mission is to bring you the freshest, most vibrant plant-based dishes that celebrate the beauty of vegetables in every bite.<br><br>Founded by passionate food lovers, Gapazeria offers a diverse menu inspired by global cuisines, ensuring that every meal is an adventure for your taste buds. We source our ingredients locally whenever possible, emphasizing sustainability and quality. Whether you're a lifelong vegetarian or simply looking to explore the benefits of plant-based dining, we invite you to join us on this delicious journey toward a healthier, happier you.<br><br>Contact Us<br>We’d love to hear from you! For inquiries, reservations, or feedback, please reach out to us at:<br>Email: dsard677@gmail.com</p>
+    </div>
+
+    <main>
+        <section id="menu" style="display: none;">
+            <h2>Our Menu</h2>
+            <ul>
+                <li>
+                    <h3 class="food-name">Pizza</h3>
+                    <p>Delicious cheese and tomato pizza. <strong class="food-price">12.00</strong></p>
+                    <button class="buy-btn">Buy</button>
+                    <div class="counter" data-item="Pizza" style="display: none;">
+                        <button class="decrement">-</button>
+                        <span class="quantity">0</span>
+                        <button class="increment">+</button>
+                    </div>
+                </li>
+                <li>
+                    <h3 class="food-name">Burger</h3>
+                    <p>Juicy beef burger with fresh lettuce and tomato. <strong class="food-price">10.00</strong></p>
+                    <button class="buy-btn">Buy</button>
+                    <div class="counter" data-item="Burger" style="display: none;">
+                        <button class="decrement">-</button>
+                        <span class="quantity">0</span>
+                        <button class="increment">+</button>
+                    </div>
+                </li>
+                <li>
+                    <h3 class="food-name">Pasta</h3>
+                    <p>Homemade pasta with a rich tomato sauce. <strong class="food-price">11.00</strong></p>
+                    <button class="buy-btn">Buy</button>
+                    <div class="counter" data-item="Pasta" style="display: none;">
+                        <button class="decrement">-</button>
+                        <span class="quantity">0</span>
+                        <button class="increment">+</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Gapazeria. All rights reserved.</p>
+    </footer>
+
+    <button id="pay-btn" style="display: none;">Pay</button>
+    
+    <div class="order-summary" id="order-summary" style="display: none;">
+        <h2>Your Order</h2>
+        <ul id="order-list"></ul>
+    </div>
+
+    <div class="bill-popup" id="bill-popup">
+        <h2>Bill Details</h2>
+        <div id="bill-details"></div>
+        <button id="close-bill-popup">Close</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const menuSection = document.getElementById("menu");
+            const titlePage = document.getElementById("title-page");
+            const buyButtons = document.querySelectorAll(".buy-btn");
+            const counters = document.querySelectorAll(".counter");
+            const payButton = document.getElementById("pay-btn");
+            const billPopup = document.getElementById("bill-popup");
+            const billDetails = document.getElementById("bill-details");
+            const closeBillPopup = document.getElementById("close-bill-popup");
+
+            document.getElementById("buy-here").addEventListener("click", function() {
+                titlePage.style.display = "none";
+                menuSection.style.display = "block"; 
+                payButton.style.display = "inline-block"; 
+            });
+
+            buyButtons.forEach((button, index) => {
+                button.addEventListener("click", function() {
+                    counters[index].style.display = "flex"; 
+                });
+            });
+
+            counters.forEach(counter => {
+                const incrementButton = counter.querySelector(".increment");
+                const decrementButton = counter.querySelector(".decrement");
+                const quantityDisplay = counter.querySelector(".quantity");
+
+                let quantity = 0;
+
+                incrementButton.addEventListener("click", function() {
+                    quantity++;
+                    quantityDisplay.textContent = quantity;
+                });
+
+                decrementButton.addEventListener("click", function() {
+                    if (quantity > 0) {
+                        quantity--;
+                        quantityDisplay.textContent = quantity;
+                    }
+                });
+            });
+
+            payButton.addEventListener("click", function() {
+                let total = 0;
+                const items = [];
+
+                counters.forEach(counter => {
+                    const itemName = counter.getAttribute('data-item');
+                    const quantity = parseInt(counter.querySelector(".quantity").textContent);
+                    const price = parseFloat(counter.parentElement.querySelector(".food-price").textContent);
+                    if (quantity > 0) {
+                        total += price * quantity;
+                        items.push(`${itemName}: ${quantity} x $${price.toFixed(2)}`);
+                    }
+                });
+
+                const tax = total * 0.01; // 1% tax
+                const totalWithTax = total + tax;
+
+                billDetails.innerHTML = `
+                    <p>${items.join('<br>')}</p>
+                    <p>Subtotal: $${total.toFixed(2)}</p>
+                    <p>1% Gapax Tax: $${tax.toFixed(2)}</p>
+                    <p><strong>Total: $${totalWithTax.toFixed(2)}</strong></p>
+                `;
+                
+                billPopup.style.display = "block"; // Show bill popup
+            });
+
+            closeBillPopup.addEventListener("click", function() {
+                billPopup.style.display = "none"; 
+            });
+        });
+    </script>
+</body>
+</html>
